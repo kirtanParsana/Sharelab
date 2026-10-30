@@ -1,0 +1,26 @@
+# Render Web Service (free plan). Data lives in hosted Turso, not on the Render filesystem.
+services:
+  - type: web
+    name: sharelab
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm test
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: SEED_DEMO
+        value: "1"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

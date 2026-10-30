@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ShareLab</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f4f5f1;--card:#fff;--ink:#16222c;--mut:#5d6b76;--line:#d9ddd6;--acc:#0b7a83;--hd:#16222c;--amber:#b7791f;--red:#b42318;--vio:#6d4bb5;--blue:#1d5fa8;--grn:#2f7d32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#12181d;--card:#1b242b;--ink:#e8edf0;--mut:#98a6b0;--line:#2e3b44;--acc:#4cc0c9;--hd:#0b1014;--amber:#e3a94a;--red:#ff7b6b;--vio:#b49cf0;--blue:#7db4ee;--grn:#7fcf83}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#12181d;--card:#1b242b;--ink:#e8edf0;--mut:#98a6b0;--line:#2e3b44;--acc:#4cc0c9;--hd:#0b1014;--amber:#e3a94a;--red:#ff7b6b;--vio:#b49cf0;--blue:#7db4ee;--grn:#7fcf83}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Public Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",Georgia,serif;margin:0 0 .4em;line-height:1.15}
+header{background:var(--hd);color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header b{font:800 22px "Bricolage Grotesque",Georgia,serif;margin-right:auto}
+header select,header button{background:#243542;color:#fff;border:1px solid #3a4e5c;border-radius:6px;padding:6px 8px;font:inherit}
+nav{display:flex;gap:4px;overflow-x:auto;padding:8px 16px;border-bottom:1px solid var(--line);background:var(--card)}
+nav button{background:none;border:0;padding:8px 12px;font:500 14px inherit;color:var(--mut);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--ink);border-color:var(--acc)}
+main{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:14px;margin:0 0 12px}
+.card.s-pending{border-left-color:var(--amber)}.card.s-approved{border-left-color:var(--acc)}.card.s-waitlisted{border-left-color:var(--vio)}.card.s-rejected,.card.s-open{border-left-color:var(--red)}.card.s-checkedout{border-left-color:var(--blue)}.card.s-returned,.card.s-resolved{border-left-color:var(--grn)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.mut{color:var(--mut);font-size:13px}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:1px 9px;font-size:12px;color:var(--mut)}
+.ok{color:var(--grn)}.no{color:var(--red)}
+.st{border-radius:4px;padding:1px 8px;font-size:12px;font-weight:600;background:var(--line)}
+button,input,select,textarea{font:inherit;color:inherit}
+button.b,dialog button{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:6px 12px;cursor:pointer}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select,textarea{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%}
+label{display:block;margin:0 0 10px;font-weight:500;font-size:13px}label input,label select,label textarea{margin-top:3px}
+.ck{font-weight:400;margin-right:10px}.ck input{width:auto}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:min(420px,92vw)}
+dialog::backdrop{background:#0008}
+.tl{border-left:2px solid var(--line);margin:8px 0 0 6px;padding-left:12px;font-size:13px}.tl div{margin:3px 0}
+code{font-size:11px;color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--hd);color:#fff;padding:10px 16px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;z-index:9}
+#toast.on{opacity:1}
+.bar{height:8px;background:var(--acc);border-radius:4px}
+.ph{width:90px;height:90px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:var(--line)}
+.login{max-width:380px;margin:40px auto}.demo{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:12px;display:block;overflow-x:auto}td,th{border-bottom:1px solid var(--line);padding:4px 8px;text-align:left;white-space:nowrap}
+</style></head><body>
+<header><b>ShareLab</b><span id="who" style="font-size:13px;color:#cfd8de"></span><button id="out" hidden>Sign out</button><button id="bell" aria-label="Notifications" hidden></button></header>
+<nav id="nav"></nav><main id="app"></main><dialog id="dlg"></dialog><div id="toast" role="status"></div>
+<script>
+
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CRED={safety:'Makerspace safety training',electronics:'Electronics lab induction',cnc:'CNC operator certificate'};
+const CATS=['Makerspace','Electronics','Computing','Rooms','Media'],CONDS=['Excellent','Good','Worn','Damaged'];
+const ST={pending:'Pending review',approved:'Approved',waitlisted:'Waitlisted',rejected:'Rejected',cancelled:'Cancelled',checkedout:'In use',returned:'Returned',noshow:'No-show'};
+const pad=n=>String(n).padStart(2,'0'),ld=n=>{const d=new Date();d.setDate(d.getDate()+n);return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)},today=()=>ld(0);
+let S=null,tok='',ui={v:'browse',q:'',cat:'',el:false,tl:{},sum:{},cs:{},m:null};
+try{tok=localStorage.getItem('sl_tok')||''}catch(e){}
+const U=id=>S.users.find(u=>u.id==id),R=id=>S.res.find(r=>r.id==id),B=id=>S.bk.find(b=>b.id==id),me=()=>S.me,nm=id=>id=='sys'?'System':U(id)?.name||id;
+const can=r=>me().role=='admin'||r.o==me().id||r.m==me().id;
+const end=b=>new Date(b.day+'T00:00').getTime()+(b.s+b.h)*36e5,when=b=>`${b.day} ${pad(b.s)}:00-${pad(b.s+b.h)}:00`;
+async function api(p,o={}){const r=await fetch(p,{...o,headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok}});const j=await r.json().catch(()=>({}));if(!r.ok){if(r.status==401&&tok){setTok('');S=null;render()}throw new Error(j.error||'Request failed')}return j}
+function setTok(t){tok=t;try{t?localStorage.setItem('sl_tok',t):localStorage.removeItem('sl_tok')}catch(e){}}
+async function refresh(){S=await api('/api/state');render()}
+async function act(a,p={}){try{const r=await api('/api/act',{method:'POST',body:JSON.stringify({a,...p})});await refresh();return r}catch(e){toast(e.message)}}
+async function login(email,password){try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})}),j=await r.json();if(!r.ok)throw new Error(j.error);setTok(j.token);ui.v='browse';await refresh()}catch(e){toast(e.message)}}
+function toast(m){const t=$('#toast');t.textContent=m;t.className='on';clearTimeout(toast.i);toast.i=setTimeout(()=>t.className='',2800)}
+function ask(title,fs,cb){const d=$('#dlg');d.innerHTML=`<form><h3>${title}</h3>${fs.map(f=>`<label>${f.l}${f.t=='sel'?`<select name="${f.k}">${f.o.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('')}</select>`:f.t=='area'?`<textarea name="${f.k}" required></textarea>`:f.t=='file'?`<input type="file" name="${f.k}" accept="${f.a||'image/*'}" multiple>`:f.t=='checks'?'<br>'+f.o.map(o=>`<span class="ck"><input type="checkbox" name="${f.k}" value="${o[0]}"> ${o[1]}</span>`).join(''):`<input name="${f.k}" ${f.o?'':'required'}>`}</label>`).join('')}<div class="row"><button class="pri">Confirm</button><button type="button" onclick="dlg.close()">Cancel</button></div></form>`;
+d.querySelector('form').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target),o={};fs.forEach(f=>o[f.k]=f.t=='checks'?fd.getAll(f.k):f.t=='file'?fd.getAll(f.k).filter(x=>x.size):fd.get(f.k));d.close();cb(o)};d.showModal()}
+function shrink(f){return new Promise((ok,no)=>{if(f.type=='application/pdf'){const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f);return}const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.72))};im.onerror=()=>no(new Error('Unsupported image'));im.src=u})}
+async function upl(fs){const ids=[];for(const f of(fs||[]).slice(0,4)){const d=await shrink(f);ids.push((await api('/api/upload',{method:'POST',body:JSON.stringify({data:d})})).id)}return ids}
+const IMG=new Map();async function blobUrl(id){if(!IMG.has(id)){const r=await fetch('/api/file/'+id,{headers:{Authorization:'Bearer '+tok}});if(!r.ok)throw 0;IMG.set(id,URL.createObjectURL(await r.blob()))}return IMG.get(id)}
+function loadImgs(){document.querySelectorAll('img[data-f]').forEach(async i=>{try{i.src=await blobUrl(i.dataset.f)}catch(e){}})}
+const ph=ids=>(ids||[]).map(f=>`<img data-f="${f}" class="ph" alt="Attached photo">`).join(''),cr=(x,l)=>x?`<div class="mut">${l}: ${x.c}. ${esc(x.n)}</div><div class="row">${ph(x.ph)}</div>`:'';
+const flagsHtml=()=>S.flags&&S.flags.length?`<div class="card s-pending"><b>Usage flags</b> <span class="mut">for human review, no automatic penalties</span>${S.flags.map(f=>`<div>${esc(nm(f.u))}: ${esc(f.msg)}</div>`).join('')}</div>`:'';
+const matchHtml=()=>`<p class="mut">${ui.m.source=='ai'?'Suggested by AI.':'Suggested by keyword match (AI not configured).'} Eligibility is checked by the system.</p>`+(ui.m.items.map(x=>`<div class="row sp" style="margin:4px 0"><span><b>${esc(R(x.id)?.n)}</b> <span class="mut">${esc(x.reason)}</span> ${x.elig?'<span class="ok">Eligible</span>':'<span class="no">Missing credentials</span>'}</span>${btn('open',x.id,'Open')}</div>`).join('')||'<p class="mut">No match. Try different words.</p>');
+const cond=[{k:'c',l:'Condition now',t:'sel',o:CONDS.map(c=>[c,c])},{k:'n',l:'Notes',t:'x',o:1},{k:'p',l:'Photos (optional, JPEG or PNG)',t:'file',o:1}];
+const A={
+nav:v=>{ui.v=v;if(v=='notif')act('readnotif')},open:i=>{ui.v='res';ui.rid=i},tl:i=>{ui.tl[i]=!ui.tl[i]},
+async submit(){const r=await act('submit',{r:ui.rid,day:$('#fd').value,s:$('#fs').value,h:$('#fh').value,purpose:$('#fp').value});if(r){ui.v='book';render();toast(ST[r.st])}},
+approve:i=>act('approve',{id:i}),
+reject:i=>ask('Reject request',[{k:'w',l:'Reason shown to the user',t:'area'}],o=>act('reject',{id:i,w:o.w})),
+wl:i=>ask('Move to waiting list',[{k:'w',l:'Reason shown to the user',t:'area'}],o=>act('wl',{id:i,w:o.w})),
+cancel:i=>act('cancel',{id:i}),
+ci:i=>ask('Check in: record condition',cond,async o=>{try{const p=await upl(o.p);await act('ci',{id:i,c:o.c,n:o.n,photos:p})}catch(e){toast(e.message)}}),
+co:i=>ask('Return: record condition',cond,async o=>{try{const p=await upl(o.p);await act('co',{id:i,c:o.c,n:o.n,photos:p})}catch(e){toast(e.message)}}),
+inc:i=>ask('Report an incident',[{k:'t',l:'Type',t:'sel',o:['Damage','Late return','No-show','Misuse','Safety','Conflict'].map(x=>[x,x])},{k:'s',l:'Severity',t:'sel',o:['Low','Medium','High'].map(x=>[x,x])},{k:'d',l:'What happened',t:'area'},{k:'p',l:'Evidence photos (optional)',t:'file',o:1}],async o=>{try{const p=await upl(o.p);await act('inc',{id:i,t:o.t,s:o.s,d:o.d,photos:p})}catch(e){toast(e.message)}}),
+resolve:i=>ask('Decide on incident',[{k:'o',l:'Outcome',t:'sel',o:[['Resolved: no penalty','No penalty'],['Resolved: warning issued','Warning issued'],['Resolved: deposit deduction approved','Deposit deduction approved'],['Dismissed','Dismiss report']]},{k:'w',l:'Reasoning (recorded)',t:'area'}],o=>act('resolve',{id:i,...o})),
+credreq:()=>ask('Request verification',[{k:'k',l:'Credential',t:'sel',o:Object.entries(CRED)},{k:'p',l:'Certificate (image or PDF, optional)',t:'file',a:'image/*,application/pdf',o:1}],async o=>{try{const p=await upl(o.p);await act('credreq',{k:o.k,file:p[0]})}catch(e){toast(e.message)}}),
+credok:i=>{const[u,k]=i.split('|');act('credok',{u,k})},credno:i=>{const[u,k]=i.split('|');act('credno',{u,k})},vown:i=>act('vown',{u:i}),
+newres:()=>ask('List a resource',[{k:'n',l:'Name',t:'x'},{k:'c',l:'Category',t:'sel',o:CATS.map(c=>[c,c])},{k:'l',l:'Location',t:'x'},{k:'req',l:'Required credentials',t:'checks',o:Object.entries(CRED)},{k:'m',l:'Approval',t:'sel',o:[['manual','Owner approves each request'],['auto','Auto-approve when eligible']]},{k:'q',l:'Max hours per user per week',t:'x'},{k:'rule',l:'Usage rules',t:'area'}],o=>act('newres',o)),
+async chain(){try{const r=await api('/api/verify');toast(r.ok?`Audit chain intact (${r.events} events)`:'Audit chain broken!')}catch(e){toast(e.message)}},
+reset:()=>act('reset'),noshow:i=>act('noshow',{id:i}),mailpref:()=>act('mailpref'),
+view:async i=>{try{window.open(await blobUrl(i),'_blank')}catch(e){toast('Cannot open file')}},
+async match(){const n=$('#mn').value;ui.mn=n;try{ui.m=await api('/api/match',{method:'POST',body:JSON.stringify({need:n})});render()}catch(e){toast(e.message)}},
+async sum(i){try{ui.sum[i]=await api('/api/ai/summary?id='+i);render()}catch(e){toast(e.message)}},
+async cai(i){const[u,k]=i.split('|');try{ui.cs[i]=(await api(`/api/ai/credential?u=${u}&k=${k}`)).text;render()}catch(e){toast(e.message)}},
+csv(i){const b=B(i),r=R(b.r),q=v=>{v=String(v??'');if(/^[=+\-@]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'},rows=[['Booking',b.id],['Resource',r.n],['User',nm(b.u)],['Slot',when(b)],['Status',b.st],['Purpose',b.purpose],['Check-in',b.ci?b.ci.c+' '+b.ci.n:''],['Return',b.co?b.co.c+' '+b.co.n:''],[],['Time','Actor','Action','Reason','Hash'],...S.audit.filter(e=>e.ent==i).map(e=>[new Date(e.t).toISOString(),nm(e.who),e.act,e.why,e.h])],a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.map(x=>x.map(q).join(',')).join('\n')],{type:'text/csv'}));a.download='booking-'+i+'.csv';a.click()}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const f=A[t.dataset.a];if(!f)return;const r=f(t.dataset.i);if(!r||!r.then)if(!$('#dlg').open&&!['reset','credok','credno','vown','approve','cancel','credreq'].includes(t.dataset.a))render()});
+const btn=(a,i,l,c)=>`<button class="b ${c||''}" data-a="${a}" data-i="${i}">${l}</button>`,sb=s=>`<span class="st">${ST[s]||s}</span>`;
+function listHtml(){const u=me(),cr=u.creds,rs=S.res.filter(r=>(!ui.q||(r.n+r.l).toLowerCase().includes(ui.q.toLowerCase()))&&(!ui.cat||r.c==ui.cat)&&(!ui.el||r.req.every(k=>cr[k]=='verified')));
+return rs.map(r=>{const miss=r.req.filter(k=>cr[k]!='verified');return`<div class="card"><h3>${esc(r.n)}</h3><div class="mut">${r.c} · ${esc(r.l)} · owner ${nm(r.o)}</div><div class="row" style="margin:8px 0">${r.req.length?r.req.map(k=>`<span class="chip">${CRED[k]}</span>`).join(''):'<span class="chip">No credentials needed</span>'}<span class="chip">${r.mode=='auto'?'Auto-approve':'Owner approves'}</span></div>${u.role=='user'?(miss.length?`<div class="no">Missing: ${miss.map(k=>CRED[k]).join(', ')}</div>`:'<div class="ok">You are eligible</div>'):''}<div style="margin-top:8px">${btn('open',r.id,'View and request','pri')}</div></div>`}).join('')||'<p class="mut">No resources match. Clear a filter to see more.</p>'}
+let pcN=0;async function pc(){const r=R(ui.rid),n=++pcN;try{const c=await api(`/api/precheck?r=${r.id}&day=${$('#fd').value}&s=${$('#fs').value}&h=${$('#fh').value}`);if(n!=pcN||!$('#pc'))return;$('#pc').innerHTML=c.checks.map(x=>`<div class="${x.ok?'ok':'no'}">${x.ok?'Pass':'Fail'}: ${x.l} <span class="mut">${esc(x.m)}</span></div>`).join('')+(c.alts&&c.alts.length?`<div class="row" style="margin:6px 0"><span class="mut">Free slots instead:</span>${c.alts.map(a=>`<button class="b" data-alt="${a.day}|${a.s}">${a.day} ${pad(a.s)}:00</button>`).join('')}</div>`:'')+`<p class="mut">${!c.elig||!c.valid?'You cannot submit until requirements are met.':!c.quota||!c.free?'You can submit: you will join the waiting list.':r.mode=='auto'?'Will be approved instantly.':'Will go to the owner for review.'}</p>`}catch(e){}}
+function resView(){const r=R(ui.rid),u=me(),bs=S.slots.filter(b=>b.r==r.id);
+return`<p>${btn('nav','browse','Back to browse')}</p><h2>${esc(r.n)}</h2><div class="mut">${r.c} · ${esc(r.l)} · owner ${nm(r.o)} · manager ${nm(r.m)}</div>
+<div class="card"><b>Usage rules</b><p>${esc(r.rule)}</p><div class="mut">Allocation: ${r.q} h per user per week; waiting list ordered by lowest recent usage. ${r.wl} waiting. Open 08:00-20:00.</div></div>
+<div class="card"><b>Booked slots</b>${bs.map(b=>`<div class="mut">${b.day} ${pad(b.s)}:00-${pad(b.s+b.h)}:00 (${ST[b.st]})</div>`).join('')||'<div class="mut">No upcoming bookings</div>'}</div>
+${u.role=='user'?`<div class="card"><h3>Request this resource</h3><div class="mut">Your fair-use score: ${u.score} (lower gets priority). Formula: hours used + 5 x late returns + 3 x no-shows.</div><div class="grid" style="margin-top:10px"><label>Date<input id="fd" type="date" min="${today()}" value="${ld(1)}"></label><label>Start<select id="fs">${[...Array(12)].map((_,i)=>`<option value="${i+8}" ${i==2?'selected':''}>${pad(i+8)}:00</option>`).join('')}</select></label><label>Hours<select id="fh">${[1,2,3,4,5,6].map(i=>`<option ${i==2?'selected':''}>${i}</option>`).join('')}</select></label><label>Purpose<input id="fp" placeholder="What will you use it for?"></label></div><div id="pc"></div>${btn('submit','','Submit request','pri')}</div>`:'<p class="mut">Sign in as a student account to request this resource.</p>'}`}
+function bcard(b){const r=R(b.r),c=can(r),mine=b.u==me().id,ov=b.st=='checkedout'&&end(b)<Date.now();let a='';
+if(c&&b.st=='pending')a+=btn('approve',b.id,'Approve','pri')+btn('wl',b.id,'Waitlist')+btn('reject',b.id,'Reject');
+if(c&&b.st=='waitlisted')a+=btn('approve',b.id,'Approve anyway')+btn('reject',b.id,'Reject');
+if((c||mine)&&b.st=='approved')a+=btn('ci',b.id,'Check in','pri');
+if((c||mine)&&b.st=='checkedout')a+=btn('co',b.id,'Return','pri');
+if((c||mine)&&['pending','waitlisted','approved'].includes(b.st))a+=btn('cancel',b.id,'Cancel');
+if((c||mine)&&['checkedout','returned'].includes(b.st))a+=btn('inc',b.id,'Report incident');
+if(c&&b.st=='approved'&&new Date(b.day+'T00:00').getTime()+b.s*36e5<Date.now())a+=btn('noshow',b.id,'Mark no-show');
+a+=btn('csv',b.id,'Export CSV');a+=btn('tl',b.id,ui.tl[b.id]?'Hide history':'History');
+return`<div class="card s-${b.st}"><div class="row sp"><b>${esc(r.n)}</b><span>${sb(b.st)}${ov?' <span class="st no">Overdue</span>':''}</span></div><div class="mut">${when(b)} · ${nm(b.u)} · ${esc(b.purpose)}${c&&!mine?` · fair-use score ${U(b.u).score}`:''}</div>
+<p style="margin:6px 0">${esc(b.why)}${b.pos?` <b>Queue position ${b.pos}.</b>`:''}</p>
+${cr(b.ci,'Check-in')}${cr(b.co,'Return')}
+<div class="row" style="margin-top:8px">${a}</div>${ui.tl[b.id]?`<div class="tl">${S.audit.filter(e=>e.ent==b.id).map(e=>`<div><b>${esc(e.act)}</b> by ${esc(nm(e.who))} <span class="mut">${new Date(e.t).toLocaleString()}</span><br>${esc(e.why)} <code>#${e.h}</code></div>`).join('')||'<div class="mut">No events visible</div>'}</div>`:''}</div>`}
+function view(){const u=me(),v=ui.v;
+if(v=='browse')return`<h2>Find equipment and spaces</h2><div class="card"><label for="mn">Describe what you need</label><div class="row"><input id="mn" style="flex:1" placeholder="e.g. print an enclosure for my sensor board" value="${esc(ui.mn||'')}">${btn('match','','Suggest','pri')}</div>${ui.m?matchHtml():''}</div><div class="grid" style="margin-bottom:12px"><input id="q" placeholder="Search by name or location" value="${esc(ui.q)}" aria-label="Search"><select id="cat" aria-label="Category"><option value="">All categories</option>${CATS.map(c=>`<option ${ui.cat==c?'selected':''}>${c}</option>`).join('')}</select>${u.role=='user'?`<label class="ck" style="margin:6px 0"><input id="el" type="checkbox" ${ui.el?'checked':''}> Only what I can book</label>`:''}</div><div id="list" class="grid">${listHtml()}</div>`;
+if(v=='res')return resView();
+if(v=='book')return`<h2>${u.role=='user'?'My bookings':'Requests and bookings'}</h2>${u.role!='user'?flagsHtml():''}${S.bk.map(bcard).join('')||'<p class="mut">No bookings yet. Browse resources to make a request.</p>'}`;
+if(v=='inc')return`<h2>Incidents</h2>${S.inc.map(n=>{const b=B(n.b),r=R(b.r);return`<div class="card s-${n.st}"><div class="row sp"><b>${n.t} · ${n.s}</b><span class="st">${n.st=='open'?'Open':'Decided'}</span></div><div class="mut">${esc(r.n)} · booking ${n.b} · reported by ${nm(n.rep)}</div><p>${esc(n.d)}</p><div class="row">${ph(n.ev)}</div>${can(r)?btn('sum',n.id,'Summary draft'):''}${ui.sum[n.id]?`<div class="card" style="margin-top:8px"><b>${ui.sum[n.id].source=='ai'?'AI-generated draft':'Automatic summary'}</b> <span class="mut">for the reviewer, not a decision</span><p>${esc(ui.sum[n.id].text)}</p></div>`:''}${n.res?`<p class="ok">${esc(n.res)}</p>`:can(r)?btn('resolve',n.id,'Decide','pri'):'<p class="mut">Awaiting a human decision by the owner or manager.</p>'}</div>`}).join('')||'<p class="mut">No incidents recorded.</p>'}`;
+if(v=='notif')return`<h2>Notifications</h2>${S.notif.map(n=>`<div class="card"><div>${esc(n.m)}</div><div class="mut">${new Date(n.t).toLocaleString()}</div></div>`).join('')||'<p class="mut">Nothing yet.</p>'}`;
+if(v=='prof'){let h=`<h2>${esc(u.name)}</h2>`;
+if(u.role=='user')h+=`<div class="card"><b>Credentials</b>${Object.entries(CRED).map(([k,l])=>`<div>${l}: <b class="${u.creds[k]=='verified'?'ok':''}">${u.creds[k]=='verified'?'Verified':u.creds[k]=='pending'?'Pending review':'Not held'}</b></div>`).join('')}<p class="mut">Fair-use score ${u.score}. Late returns ${u.late}, no-shows ${u.noshow}.</p>${btn('credreq','','Request verification','pri')}</div>`;
+if(u.role=='owner')h+=u.verified?`<p>${btn('newres','','List a resource','pri')}</p>`+S.res.filter(r=>r.o==u.id).map(r=>`<div class="card"><b>${esc(r.n)}</b><div class="mut">${r.c} · ${esc(r.l)}</div></div>`).join(''):'<div class="card s-pending">Your owner profile is awaiting admin verification. Listing is disabled until then.</div>';
+if(['manager','admin'].includes(u.role))h+=`<h3>Credentials to review</h3>${S.pend.map(p=>`<div class="card"><div class="row sp"><span>${esc(nm(p.u))}: ${CRED[p.k]}</span><span class="row">${p.file?btn('view',p.file,'View document')+btn('cai',p.u+'|'+p.k,'AI assist'):'<span class="mut">No document</span>'}${btn('credok',p.u+'|'+p.k,'Verify','pri')}${btn('credno',p.u+'|'+p.k,'Reject')}</span></div>${ui.cs[p.u+'|'+p.k]?`<p class="mut"><b>Suggestion (check the document yourself):</b> ${esc(ui.cs[p.u+'|'+p.k])}</p>`:''}</div>`).join('')||'<p class="mut">No pending credentials.</p>'}`;
+h+=`<div class="card">Email notifications: <b>${u.mail?'On':'Off'}</b> ${btn('mailpref','',u.mail?'Turn off':'Turn on')}</div>`;return h}
+if(v=='admin'){const us=S.users.filter(x=>x.role=='user'),mx=Math.max(1,...us.map(x=>x.score));return`<h2>Administration</h2><div class="card"><b>Owner verification</b>${S.users.filter(x=>x.role=='owner').map(x=>`<div class="row sp" style="margin-top:6px"><span>${esc(x.name)}</span>${x.verified?'<span class="ok">Verified</span>':btn('vown',x.id,'Verify owner','pri')}</div>`).join('')}</div>
+<div class="card"><b>Fair-share overview (fair-use score)</b>${us.map(x=>`<div style="margin-top:6px">${esc(x.name)}: ${x.score}<div class="bar" style="width:${x.score/mx*100}%"></div></div>`).join('')}</div>
+<div class="card"><b>Automation status</b><div class="mut">AI assists: ${S.ai?'connected':'not configured, using local fallbacks'}. Email: ${S.mailOn?'sending through provider':'not configured, messages are logged only'}.</div></div>${flagsHtml()}<div class="card"><b>Email outbox</b><table><tr><th>Time<th>To<th>Subject<th>Status</tr>${S.outbox.map(m=>`<tr><td>${new Date(m.t).toLocaleTimeString()}<td>${esc(m.to_)}<td>${esc(m.subject).slice(0,60)}<td>${esc(m.st)}</tr>`).join('')}</table></div><div class="card"><div class="row sp"><b>Audit log (${S.audit.length})</b><span>${btn('chain','','Verify chain')}${btn('reset','','Reset demo data')}</span></div><table><tr><th>Time<th>Actor<th>Action<th>Entity<th>Reason<th>Hash</tr>${S.audit.slice().reverse().map(e=>`<tr><td>${new Date(e.t).toLocaleTimeString()}<td>${esc(nm(e.who))}<td>${esc(e.act)}<td>${esc(e.ent)}<td>${esc(e.why).slice(0,70)}<td><code>${e.h}</code></tr>`).join('')}</table></div>`}}
+function loginView(){const d=[['student@demo','Asha (student)'],['student2@demo','Ravi (student)'],['owner@demo','Dr. Mehta (owner)'],['manager@demo','Imran (manager)'],['admin@demo','Priya (admin)'],['owner2@demo','Dr. Rao (unverified owner)']];
+return`<div class="card login"><h2>Sign in to ShareLab</h2><label>Email<input id="le" autocomplete="username"></label><label>Password<input id="lp" type="password" autocomplete="current-password"></label><button class="b pri" id="lg">Sign in</button><p class="mut" style="margin-top:14px">Demo accounts, password <b>demo1234</b>. Tap one to sign in:</p><div class="demo">${d.map(([e,l])=>`<button class="b" data-demo="${e}">${l}</button>`).join('')}</div></div>`}
+function render(){const pa=$('#app');
+if(!S){$('#nav').innerHTML='';$('#who').textContent='';$('#out').hidden=$('#bell').hidden=true;pa.innerHTML=loginView();return}
+const u=me(),un=S.notif.filter(n=>!n.seen).length,pend=S.bk.filter(b=>b.st=='pending'&&can(R(b.r))).length;
+$('#who').textContent=u.name;$('#out').hidden=$('#bell').hidden=false;$('#bell').textContent='Alerts '+(un||'');$('#bell').dataset.a='nav';$('#bell').dataset.i='notif';
+const tabs=[['browse','Browse'],['book',u.role=='user'?'My bookings':'Requests'+(pend?' ('+pend+')':'')],['inc','Incidents'],['prof',u.role=='user'?'Profile':u.role=='owner'?'My resources':'Credentials']];if(u.role=='admin')tabs.push(['admin','Admin']);
+$('#nav').innerHTML=tabs.map(([v,l])=>`<button data-a="nav" data-i="${v}" class="${ui.v==v||(ui.v=='res'&&v=='browse')?'on':''}">${l}</button>`).join('');
+pa.innerHTML=view();loadImgs();if(ui.v=='res'&&u.role=='user'){pc();pa.querySelector('#fd').closest('.card').addEventListener('input',pc)}}
+$('#out').onclick=async()=>{try{await api('/api/logout')}catch(e){}setTok('');S=null;render()};
+$('#app').addEventListener('click',e=>{const al=e.target.closest('[data-alt]');if(al){const[d,t]=al.dataset.alt.split('|');$('#fd').value=d;$('#fs').value=t;pc()}const d=e.target.closest('[data-demo]');if(d)login(d.dataset.demo,'demo1234');if(e.target.id=='lg')login($('#le').value,$('#lp').value)});
+$('#app').addEventListener('input',e=>{const i=e.target.id;if(i=='q'||i=='cat'||i=='el'){ui[i]=i=='el'?e.target.checked:e.target.value;$('#list').innerHTML=listHtml()}});
+(async()=>{if(tok)try{await refresh()}catch(e){}render()})();
+setInterval(()=>{if(S&&!$('#dlg').open&&!['res'].includes(ui.v))refresh().catch(()=>{})},30000);
+</script></body></html>

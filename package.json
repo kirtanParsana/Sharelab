@@ -1,0 +1,17 @@
+{
+  "name": "sharelab",
+  "version": "1.0.0",
+  "description": "ShareLab - trusted sharing of underused campus equipment and spaces (Node.js HTTP server + Turso/libSQL)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@libsql/client": "^0.18.0"
+  }
+}
