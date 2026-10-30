@@ -54,7 +54,8 @@ async function queueMail(uid, m) { // in-app is always on; email is logged to th
 // ---------- domain logic ----------
 const R = async id => { const r = await one('SELECT * FROM res WHERE id=?', id); if (!r) bad('Resource not found', 404); r.req = JSON.parse(r.req); return r; };
 const B = async id => await one('SELECT * FROM bk WHERE id=?', id) || bad('Booking not found', 404);
-const canR = (me, r) => me.role === 'admin' || r.o === me.id || r.m === me.id;
+const verified = u => Number(u?.verified) === 1;
+const canR = (me, r) => me.role === 'admin' || r.m === me.id || (verified(me) && r.o === me.id);
 const credOf = async u => Object.fromEntries((await all('SELECT k,st FROM creds WHERE u=?', u)).map(c => [c.k, c.st]));
 const conflict = async (r, d, s, h, ex) => one(`SELECT * FROM bk WHERE r=? AND id!=? AND st IN ${ACT} AND day=? AND ?<s+h AND s<?`, r, ex || '', d, s, s + h);
 const used = async (u, r, ex) => (await one(`SELECT COALESCE(SUM(h),0) v FROM bk WHERE u=? AND r=? AND id!=? AND st IN ${USED}`, u, r, ex || '')).v;
@@ -190,7 +191,7 @@ const ACTS = {
     await run('UPDATE users SET verified=1 WHERE id=?', u.id); await log('owner-verified', u.id, 'Verified by admin', me.id); await note(u.id, 'You can now list resources');
   },
   async newres(me, p) {
-    if (me.role !== 'owner' || !me.verified) bad('Only verified owners can list resources', 403);
+    if (me.role !== 'owner' || !verified(me)) bad('Only verified owners can list resources', 403);
     const n = str(p.n, 80), l = str(p.l, 80), rule = str(p.rule, 400); if (!n || !l || !rule) bad('Name, location and rules are required');
     const req = (Array.isArray(p.req) ? p.req : []).filter(k => CRED[k]), mgr = await one("SELECT id FROM users WHERE role='manager' LIMIT 1");
     const id = await nextId('r'); await run('INSERT INTO res(id,n,c,l,o,m,req,mode,q,rule) VALUES(?,?,?,?,?,?,?,?,?,?)', id, n, oneOf(p.c, CATS, 'category'), l, me.id, mgr.id, JSON.stringify(req), oneOf(p.m, ['auto', 'manual'], 'approval mode'), Math.min(40, Math.max(1, +p.q || 4)), rule);

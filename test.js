@@ -45,6 +45,9 @@ ready.then(() => server.listen(0, async () => {
     ok('wrong password rejected', (await fetch(base + '/api/login', { method: 'POST', body: JSON.stringify({ email: 'student@demo', password: 'x' }) })).status === 401);
     ok('unauthenticated state blocked', (await call('', '/api/state')).s === 401);
     ok('unverified owner cannot list', (await call(owner2, '/api/act', { a: 'newres', n: 'X', c: 'Rooms', l: 'Y', m: 'auto', q: 2, rule: 'z' })).s === 403);
+    await db.run("UPDATE res SET o='u6' WHERE id='r1'");
+    ok('unverified owner cannot approve', (await call(owner2, '/api/act', { a: 'approve', id: 'B1' })).s === 403);
+    await db.run("UPDATE res SET o='u3' WHERE id='r1'");
     ok('admin verifies owner', (await call(admin, '/api/act', { a: 'vown', u: 'u6' })).s === 200);
     ok('verified owner lists resource', (await call(owner2, '/api/act', { a: 'newres', n: 'Laser Cutter', c: 'Makerspace', l: 'B-20', req: ['safety'], m: 'manual', q: 4, rule: 'Eye protection' })).s === 200);
     // lifecycle on r1 (manual approval, needs safety training)
