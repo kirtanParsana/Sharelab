@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+process.env.DEMO_PASSWORD = 'demo1234';
 // End-to-end + database-layer tests. Uses a temporary local libSQL file, never hosted Turso.
 process.env.NODE_ENV = 'test';
 process.env.TURSO_DATABASE_URL = 'file:' + require('node:path').join(require('node:os').tmpdir(), 'sharelab-test-' + Date.now() + '.db');
